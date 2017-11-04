@@ -12,10 +12,22 @@ import com.stocks.cluelesscloset.POKO.ClothingData
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_add_clothes.*
 
+/**
+ * Activity that shows the user their inventoried items and allows them to add more if they'd
+ * like to.
+ */
 class AddClothesActivity : AppCompatActivity() {
-
+    /**
+     * Adapter to hold user accessories.
+     */
     var accessoriesAdapter: NewClothingAdapter? = null
+    /**
+     * Adapter to hold user tops.
+     */
     var topAdapter: NewClothingAdapter? = null
+    /**
+     * Adapter to hold user bottoms.
+     */
     var bottomAdapter: NewClothingAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,12 +101,17 @@ class AddClothesActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Helper method: Allows for quickly animating the rotation arrow.
+     * @param view View to rotate.
+     * @param reset Boolean to determine if the view needs to be reset or not.
+     */
     private fun rotateAnimationUtils(view: ImageView, reset: Boolean) {
         if (reset) {
             view.rotation = 0f
             view.animate().rotationBy(90f).setDuration(150).start()
         } else {
-            view.rotation = 90f;
+            view.rotation = 90f
             view.animate().rotationBy(-90f).setDuration(150).start()
         }
 

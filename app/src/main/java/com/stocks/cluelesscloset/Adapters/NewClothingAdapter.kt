@@ -11,7 +11,9 @@ import com.squareup.picasso.Picasso
 import com.stocks.cluelesscloset.POKO.ClothingData
 import com.stocks.cluelesscloset.R
 
-
+/**
+ * Adapter for displaying the user's indexed clothing.
+ */
 class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val context: Context): RecyclerView.Adapter<NewClothingAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: NewClothingAdapter.ViewHolder?, position: Int) {
@@ -39,9 +41,23 @@ class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val co
     }
 
     class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+        /**
+         * Icon of image.
+         */
         var image_icon: ImageView? = null
+        /**
+         * Label for clothing.
+         */
         var clothing_label: TextView? = null
+        /**
+         * Icon to used to trash a row quickly.
+         */
         var trash_row: ImageView? = null
+
+        /**
+         * Extra init to bind views to viewholder
+         * Kotlin synthetic methods do not seem to work outside of fragments or activities.
+         */
         init {
             image_icon = itemView?.findViewById(R.id.image_icon)
             clothing_label = itemView?.findViewById(R.id.clothing_label)
@@ -49,6 +65,9 @@ class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val co
         }
     }
 
+    /**
+     * Helper method: Removes item from List.
+     */
     private fun removeItem(position: Int) {
         dataList.removeAt(position)
         notifyItemRemoved(position)
