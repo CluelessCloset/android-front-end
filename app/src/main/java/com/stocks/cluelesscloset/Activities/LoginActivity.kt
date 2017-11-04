@@ -1,8 +1,10 @@
-package com.stocks.cluelesscloset
+package com.stocks.cluelesscloset.Activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -11,6 +13,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        startActivity(Intent(this, OutfitActivity::class.java))
         auth_switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 auth_title_view.text = getString(R.string.register)
