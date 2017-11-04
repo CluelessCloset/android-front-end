@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -21,7 +22,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/paths" />
+                android:resource="@xml/paths"/>
         </provider>
 
         <activity android:name=".Activities.LoginActivity">
@@ -33,11 +34,15 @@
         </activity>
         <activity android:name=".Activities.OutfitActivity">
         </activity>
-        <activity android:name=".Activities.AddClothesActivity"
-        android:parentActivityName=".Activities.OutfitActivity">
+        <activity
+            android:name=".Activities.AddClothesActivity"
+            android:parentActivityName=".Activities.OutfitActivity">
         </activity>
-        <activity android:name=".Activities.NewClothesActivity"
-        android:parentActivityName=".Activities.AddClothesActivity">
+        <activity
+            android:name=".Activities.NewClothesActivity"
+            android:parentActivityName=".Activities.AddClothesActivity">
+        </activity>
+        <activity android:name=".Activities.LexChatActivity">
         </activity>
     </application>
 
