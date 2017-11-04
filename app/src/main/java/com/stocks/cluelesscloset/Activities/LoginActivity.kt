@@ -7,6 +7,9 @@ import android.view.View
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_login.*
 
+/**
+ * Activity that allows the user to log in or register.
+ */
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

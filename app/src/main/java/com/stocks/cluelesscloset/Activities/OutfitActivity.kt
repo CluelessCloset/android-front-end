@@ -16,12 +16,32 @@ import com.stocks.cluelesscloset.Fragments.SearchFragment
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_outfit.*
 
-
+/**
+ * Activity the user reaches after they login/register.
+ * The user gets a suggested outfit based on what the a number of factors.
+ * They also have the option to query for another outfit, inventory new outfits, or specify their
+ * tastes in outfits.
+ */
 class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    /**
+     * Reference to Google API client.
+     */
     private var apiClient: GoogleApiClient? = null
+    /**
+     * Reference to current location.
+     */
     private var currentLocation: Location? = null
+    /**
+     * Fine location permissions request integer.
+     */
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+    /**
+     * Tag reference to class.
+     */
     private val TAG = "OutfitActivity"
+    /**
+     * Reference to search fragment.
+     */
     private val searchFragment: SearchFragment = SearchFragment()
 
     override fun onConnected(p0: Bundle?) {

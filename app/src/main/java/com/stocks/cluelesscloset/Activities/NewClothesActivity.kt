@@ -18,9 +18,6 @@ import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_new_clothes.*
 import java.io.File
 
-
-
-
 /**
  * Activity designated for user when they want to add a new article of clothing.
  */
@@ -99,7 +96,11 @@ class NewClothesActivity : AppCompatActivity() {
         }
     }
 
-    // Returns the File for a photo stored on disk given the fileName
+    /**
+     * Returns the File for a photo stored on disk given the fileName
+     * @param fileName Name of file to get URI from.
+     * @return File descriptor to URI.
+     */
     fun getPhotoFileUri(fileName: String): File? {
         // Only continue if the SD Card is mounted
         if (isExternalStorageAvailable()) {
@@ -121,12 +122,18 @@ class NewClothesActivity : AppCompatActivity() {
         return null
     }
 
-    // Returns true if external storage for photos is available
+    /**
+     * Returns true if external storage for photos is available.
+     * @return True if storage for photos is available.
+     */
     private fun isExternalStorageAvailable(): Boolean {
         val state = Environment.getExternalStorageState()
         return state == Environment.MEDIA_MOUNTED
     }
 
+    /**
+     * What you yell to the sky when you need all the permissions.
+     */
     private fun gibePermission() {
         val permissionsArray = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         ActivityCompat.requestPermissions(

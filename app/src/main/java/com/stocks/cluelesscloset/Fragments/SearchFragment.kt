@@ -17,7 +17,7 @@ class SearchFragment : DialogFragment() {
 
 
     /**
-     * Callback method.
+     * Callback interface.
      */
     var searchCompleteListener: SearchCompleteListener? = null
 
