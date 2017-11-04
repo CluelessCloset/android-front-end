@@ -22,7 +22,7 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     private var currentLocation: Location? = null
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     private val TAG = "OutfitActivity"
-    val searchFragment: SearchFragment = SearchFragment()
+    private val searchFragment: SearchFragment = SearchFragment()
 
     override fun onConnected(p0: Bundle?) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

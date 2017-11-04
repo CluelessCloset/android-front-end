@@ -33,9 +33,11 @@
         </activity>
         <activity android:name=".Activities.OutfitActivity">
         </activity>
-        <activity android:name=".Activities.AddClothesActivity">
+        <activity android:name=".Activities.AddClothesActivity"
+        android:parentActivityName=".Activities.OutfitActivity">
         </activity>
-        <activity android:name=".Activities.NewClothesActivity">
+        <activity android:name=".Activities.NewClothesActivity"
+        android:parentActivityName=".Activities.AddClothesActivity">
         </activity>
     </application>
 

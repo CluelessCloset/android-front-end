@@ -22,6 +22,8 @@ class AddClothesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_clothes)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         accessoriesAdapter = NewClothingAdapter(mutableListOf(
                 ClothingData("https://t5.rbxcdn.com/5c05e86bc99e8e3923c1f915636fb43a", "Pizza doge"),
                 ClothingData("http://ratemyprofessors.mtvnimages.com/prof/t_William_Moloney_47964.gif", "The savior")), applicationContext)

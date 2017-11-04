@@ -39,6 +39,8 @@ class NewClothesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_new_clothes)
         gibePermission()
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val directory = File(Environment.getExternalStorageDirectory().toString() + File.separator + "images")
         directory.mkdirs()
 
