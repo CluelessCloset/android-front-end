@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.stocks.cluelesscloset">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -22,6 +22,8 @@
         <activity android:name=".Activities.OutfitActivity">
         </activity>
         <activity android:name=".Activities.AddClothesActivity">
+        </activity>
+        <activity android:name=".Activities.NewClothesActivity">
         </activity>
     </application>
 

@@ -12,10 +12,18 @@
 
     <!-- Outfit activity strings -->
     <string name="add_clothes">Add Clothes</string>
-    <string name="new_outfit">Give new outfit</string>
+    <string name="new_outfit">Get new outfit</string>
     <string name="search">Search outfits</string>
     <string name="accessories">Accessories</string>
     <string name="top">Top</string>
     <string name="bottom">Bottom</string>
+
+    <!-- Popup search strings -->
+    <string name="search_hint">How do you want to look today?</string>
+    <string name="style_text">Enter some style 😎</string>
+
+    <string name="accessories_display">Accessories</string>
+    <string name="tops_display">Tops</string>
+    <string name="bottoms_display">Bottoms</string>
 
 </resources>
