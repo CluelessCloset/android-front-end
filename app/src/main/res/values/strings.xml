@@ -26,4 +26,9 @@
     <string name="tops_display">Tops</string>
     <string name="bottoms_display">Bottoms</string>
 
+    <string name="clothing_name">%1$s</string>
+
+    <string name="new_apparel_hint">Add some new apparel!</string>
+    <string name="apparel_category">Apparel Category</string>
+    <string name="photo_snap">Snap a photo of your apparel!</string>
 </resources>

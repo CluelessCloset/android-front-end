@@ -3,17 +3,22 @@ package com.stocks.cluelesscloset.Activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.stocks.cluelesscloset.Adapters.NewClothingAdapter
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_add_clothes.*
 
 class AddClothesActivity : AppCompatActivity() {
+
+    var accessoriesAdapter: NewClothingAdapter? = null
+    var topAdapter: NewClothingAdapter? = null
+    var bottomAdapter: NewClothingAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_clothes)
 
         accessories_card.setOnClickListener {
-            
+
         }
 
         tops_card.setOnClickListener {
