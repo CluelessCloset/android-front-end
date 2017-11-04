@@ -19,6 +19,7 @@ class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val co
                 .load(dataList[position].imgUri)
                 .placeholder(R.drawable.ic_clothes_dark)
                 .error(R.drawable.ic_err)
+                .fit()
                 .into(holder?.image_icon)
 
         holder?.clothing_label?.text = dataList[position].clothingName

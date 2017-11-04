@@ -2,6 +2,7 @@ package com.stocks.cluelesscloset.Activities
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
@@ -10,6 +11,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Toast
 import com.stocks.cluelesscloset.R
@@ -30,6 +32,7 @@ class NewClothesActivity : AppCompatActivity() {
 
     private var photoFile: File? = null
     private var photoFileName: String = "photo_file.jpg"
+    private var bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,12 @@ class NewClothesActivity : AppCompatActivity() {
 
         val directory = File(Environment.getExternalStorageDirectory().toString() + File.separator + "images")
         directory.mkdirs()
+
+        apparel_category_box.adapter = ArrayAdapter<String>(applicationContext,
+                android.R.layout.simple_spinner_dropdown_item,
+                arrayOf(getString(R.string.accessories),
+                getString(R.string.tops),
+                getString(R.string.bottom)))
 
         photo_button.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -57,6 +66,16 @@ class NewClothesActivity : AppCompatActivity() {
                 startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
             }
 
+            cancel_button.setOnClickListener {
+                finish()
+            }
+
+            save_button.setOnClickListener {
+                val spinnerChoice = apparel_category_box.selectedItem.toString()
+                val name = new_apparel_box.text.toString()
+                // AND BITMAP! FIRE THAT SHIT UP
+                finish()
+            }
 
         }
     }
@@ -66,11 +85,11 @@ class NewClothesActivity : AppCompatActivity() {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 photoFile?.let {
-                    val takenImage = BitmapFactory.decodeFile(it.toString())
+                    bitmap = BitmapFactory.decodeFile(it.toString())
                     // RESIZE BITMAP, see section below
                     // Load the taken image into a preview
                     val ivPreview = photo as ImageView
-                    ivPreview.setImageBitmap(takenImage)
+                    ivPreview.setImageBitmap(bitmap)
                 }
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
@@ -95,7 +114,7 @@ class NewClothesActivity : AppCompatActivity() {
 
             // Return the file target for the photo based on filename
 
-            return File(mediaStorageDir.getPath() + File.separator + fileName)
+            return File(mediaStorageDir.path + File.separator + fileName)
         }
         return null
     }

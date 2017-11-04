@@ -74,8 +74,6 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         add_clothes_button.setOnClickListener {
             startActivity(Intent(this, AddClothesActivity::class.java))
         }
-
-        startActivity(Intent(this, AddClothesActivity::class.java))
     }
 
     /**

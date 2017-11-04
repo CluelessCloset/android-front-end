@@ -11,18 +11,21 @@
                android:layout_height="wrap_content"
                android:layout_weight="1"
                android:padding="8dp"
+               android:layout_gravity="center"
                android:src="@drawable/ic_clothes_dark"/>
 
     <TextView android:id="@+id/clothing_label"
               style="@style/mini_text"
               android:layout_width="0dp"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
               android:layout_weight="7"
               android:text="@string/clothing_name"/>
 
     <ImageView android:id="@+id/trash_row"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:layout_gravity="center"
                android:padding="8dp"
                android:src="@drawable/ic_trash"/>
 </LinearLayout>
