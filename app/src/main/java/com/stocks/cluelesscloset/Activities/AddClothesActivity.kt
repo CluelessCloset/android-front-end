@@ -45,7 +45,10 @@ class AddClothesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_clothes)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
 
+    override fun onResume() {
+        super.onResume()
         val retrofit = Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(MoshiConverterFactory.create())

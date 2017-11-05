@@ -18,7 +18,6 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.stocks.cluelesscloset.Endpoints.BASEURL
 import com.stocks.cluelesscloset.Model.ClothingModel
-import com.stocks.cluelesscloset.POKO.BaseResponse
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_new_clothes.*
 import okhttp3.MediaType
@@ -96,8 +95,8 @@ class NewClothesActivity : AppCompatActivity() {
         apparel_category_box.adapter = ArrayAdapter<String>(applicationContext,
                 android.R.layout.simple_spinner_dropdown_item,
                 arrayOf(getString(R.string.accessories),
-                getString(R.string.tops),
-                getString(R.string.bottom)))
+                        getString(R.string.tops),
+                        getString(R.string.bottom)))
 
         cancel_button.setOnClickListener {
             finish()
@@ -133,18 +132,17 @@ class NewClothesActivity : AppCompatActivity() {
                         betterEmail,
                         water_resistant_box.isChecked,
                         warmthLevel)
-
                         .enqueue(object : Callback<ResponseBody> {
                             override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
                                 // pizza doge
                             }
 
                             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                                    finish()
+                                finish()
                             }
 
                         })
-            } else  {
+            } else {
                 Toast.makeText(applicationContext, "Finish filling out things!", Toast.LENGTH_LONG).show()
             }
         }

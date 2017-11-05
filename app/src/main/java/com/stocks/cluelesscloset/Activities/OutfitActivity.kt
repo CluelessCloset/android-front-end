@@ -1,6 +1,7 @@
 package com.stocks.cluelesscloset.Activities
 
 import android.Manifest
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -58,21 +59,14 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     private var email: String? = ""
 
-    private var latitude = 0.0
-    private var longitude = 0.0
+    private var latitude: Double? = 0.0
+    private var longitude: Double? = 0.0
 
     override fun onConnected(p0: Bundle?) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return
-        }
-
         currentLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient)
-        currentLocation?.let {
-            Toast.makeText(this, "Latitude: ${it.latitude}, Longitude: ${it.longitude}", Toast.LENGTH_LONG).show()
-            Log.wtf(TAG, "Latitude: ${it.latitude}, Longitude: ${it.longitude}")
-            latitude = it.latitude
-            longitude = it.longitude
-
+        if (currentLocation != null) {
+            latitude = currentLocation?.latitude
+            longitude = currentLocation?.longitude
             getMeOneOutfitPls()
         }
     }
@@ -141,7 +135,7 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         when (requestCode) {
             PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Yay we have permission, we can continue!", Toast.LENGTH_LONG).show()
+                    getMeOneOutfitPls()
                 } else {
                     if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                         Toast.makeText(this, "hi friend pls let us have location, thank", Toast.LENGTH_LONG).show()
@@ -155,11 +149,11 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     private fun getMeOneOutfitPls(custom: String = "") {
         val immutableEmail = getImmutableEmail()
-        Log.wtf("EMAIL:", "$immutableEmail $latitude $longitude")
+
         Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(MoshiConverterFactory.create())
-                .build().create(ClothingModel::class.java).getOutfit(immutableEmail, latitude, longitude, custom)
+                .build().create(ClothingModel::class.java).getOutfit(immutableEmail, latitude as Double, longitude as Double, custom)
                 .enqueue(object : Callback<Outfit> {
                     override fun onFailure(call: Call<Outfit>?, t: Throwable?) {
                         Log.wtf("no", "we failed again")
@@ -185,8 +179,6 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                             Picasso.with(applicationContext)
                                     .load("$BASEURL/clothes_images/${response.body()?.bottoms?.image}")
                                     .into(bottom_image)
-
-                            Toast.makeText(applicationContext, "SUCCESS", Toast.LENGTH_LONG).show()
                         } else {
                             Toast.makeText(applicationContext, "FAILURE ${response.message()} code: ${response.code()}", Toast.LENGTH_LONG).show()
                         }
