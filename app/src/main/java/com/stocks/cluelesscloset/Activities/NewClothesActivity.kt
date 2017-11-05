@@ -93,7 +93,7 @@ class NewClothesActivity : AppCompatActivity() {
         directory.mkdirs()
 
         apparel_category_box.adapter = ArrayAdapter<String>(applicationContext,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 arrayOf(getString(R.string.accessories),
                 getString(R.string.tops),
                 getString(R.string.bottom)))
@@ -117,10 +117,18 @@ class NewClothesActivity : AppCompatActivity() {
                         getString(R.string.prefs),
                         Context.MODE_PRIVATE).getString(getString(R.string.save_email), "")
 
-                val reqFile = RequestBody.create(MediaType.parse("file"), photoFile as File)
-                val body = MultipartBody.Part.createFormData("image_url", photoFile?.name, reqFile)
-                val name = RequestBody.create(MediaType.parse("text/plain"), "image")
-                clothingModel.addArticle(body, name, articleName, email, water_resistant_box.isChecked, warmthLevel, clothingType)
+                val reqFile = RequestBody.create(MediaType.parse("image/*"), photoFile as File)
+                val body = MultipartBody.Part.createFormData(photoFileName, photoFile?.name, reqFile)
+                val name = RequestBody.create(MediaType.parse("text/plain"), "img_url")
+                clothingModel.addArticle(
+                        body,
+                        name,
+                        articleName,
+                        clothingType,
+                        email,
+                        water_resistant_box.isChecked,
+                        warmthLevel)
+
                         .enqueue(object : Callback<BaseResponse> {
                             override fun onFailure(call: Call<BaseResponse>?, t: Throwable?) {
                                 // pizza doge
