@@ -16,16 +16,21 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Toast
-import com.stocks.cluelesscloset.Endpoints.DEVBASEURL
+import com.stocks.cluelesscloset.Endpoints.BASEURL
 import com.stocks.cluelesscloset.Model.ClothingModel
+import com.stocks.cluelesscloset.POKO.BaseResponse
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_new_clothes.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+
 
 /**
  * Activity designated for user when they want to add a new article of clothing.
@@ -50,7 +55,7 @@ class NewClothesActivity : AppCompatActivity() {
     /**
      * Photo file name.
      */
-    private var photoFileName: String = "photo_file.jpg"
+    private var photoFileName: String = "img_url"
     /**
      * Bitmap of image.
      */
@@ -88,7 +93,7 @@ class NewClothesActivity : AppCompatActivity() {
         directory.mkdirs()
 
         apparel_category_box.adapter = ArrayAdapter<String>(applicationContext,
-                android.R.layout.simple_spinner_dropdown_item,
+                android.R.layout.simple_spinner_item,
                 arrayOf(getString(R.string.accessories),
                 getString(R.string.tops),
                 getString(R.string.bottom)))
@@ -103,7 +108,7 @@ class NewClothesActivity : AppCompatActivity() {
                 val clothingType = apparel_category_box.selectedItem.toString()
                 val articleName = new_apparel_box.text.toString()
                 val clothingModel = Retrofit.Builder()
-                        .baseUrl(DEVBASEURL)
+                        .baseUrl(BASEURL)
                         .addConverterFactory(MoshiConverterFactory.create())
                         .build()
                         .create(ClothingModel::class.java)
@@ -112,11 +117,24 @@ class NewClothesActivity : AppCompatActivity() {
                         getString(R.string.prefs),
                         Context.MODE_PRIVATE).getString(getString(R.string.save_email), "")
 
-                val reqFile = RequestBody.create(MediaType.parse("image/*"), photoFile)
+                val reqFile = RequestBody.create(MediaType.parse("file"), photoFile as File)
                 val body = MultipartBody.Part.createFormData("image_url", photoFile?.name, reqFile)
                 val name = RequestBody.create(MediaType.parse("text/plain"), "image")
                 clothingModel.addArticle(body, name, articleName, email, water_resistant_box.isChecked, warmthLevel, clothingType)
-                finish()
+                        .enqueue(object : Callback<BaseResponse> {
+                            override fun onFailure(call: Call<BaseResponse>?, t: Throwable?) {
+                                // pizza doge
+                            }
+
+                            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                                if (response.isSuccessful) {
+                                    finish()
+                                } else {
+                                    Toast.makeText(applicationContext, "DID NOT UPLOAD CORRECTLY ${response.message()} code ${response.code()}", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                        })
             } else  {
                 Toast.makeText(applicationContext, "Finish filling out things!", Toast.LENGTH_LONG).show()
             }

@@ -8,17 +8,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import com.stocks.cluelesscloset.POKO.ClothingData
+import com.stocks.cluelesscloset.Endpoints.BASEURL
+import com.stocks.cluelesscloset.POKO.Accessory
 import com.stocks.cluelesscloset.R
 
 /**
  * Adapter for displaying the user's indexed clothing.
  */
-class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val context: Context): RecyclerView.Adapter<NewClothingAdapter.ViewHolder>() {
+class AccessoryAdapter(private val dataList: MutableList<Accessory>, val context: Context): RecyclerView.Adapter<AccessoryAdapter.ViewHolder>() {
 
-    override fun onBindViewHolder(holder: NewClothingAdapter.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: AccessoryAdapter.ViewHolder?, position: Int) {
         Picasso.with(context)
-                .load(dataList[position].link)
+                .load("$BASEURL/clothes_images/${dataList[position].image}")
                 .placeholder(R.drawable.ic_clothes_dark)
                 .error(R.drawable.ic_err)
                 .fit()

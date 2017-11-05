@@ -3,6 +3,7 @@ package com.stocks.cluelesscloset.Activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -54,7 +55,7 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
      */
     private val searchFragment: SearchFragment = SearchFragment()
 
-    private var email: String = ""
+    private var email: String? = ""
 
     private var latitude = 0.0
     private var longitude = 0.0
@@ -83,20 +84,18 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         Log.wtf(TAG, "This is why I cry every night")
     }
 
+    var preferences: SharedPreferences? = null
+    var editor: SharedPreferences.Editor? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_outfit)
-        buildGoogleApiClient()
-        apiClient?.connect()
+
+        preferences = getSharedPreferences(getString(R.string.prefs), Context.MODE_PRIVATE)
+
+        email = preferences?.getString(getString(R.string.save_email), "")
 
         val permissionsArray = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        ActivityCompat.requestPermissions(
-                this,
-                permissionsArray,
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-        )
-
-        email = getSharedPreferences(getString(R.string.prefs), Context.MODE_PRIVATE).getString(getString(R.string.save_email), "")
         setContentView(R.layout.activity_outfit)
         searchFragment.searchCompleteListener = object : SearchFragment.SearchCompleteListener {
             override fun searchCompleted(s: String) {
@@ -108,13 +107,22 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             searchFragment.show(supportFragmentManager, "partay")
         }
 
-       gib_new_outfit_button.setOnClickListener {
-           getMeOneOutfitPls()
-       }
+        gib_new_outfit_button.setOnClickListener {
+            getMeOneOutfitPls()
+        }
 
         add_clothes_button.setOnClickListener {
             startActivity(Intent(this, AddClothesActivity::class.java))
         }
+
+        ActivityCompat.requestPermissions(
+                this,
+                permissionsArray,
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+        )
+
+        buildGoogleApiClient()
+        apiClient?.connect()
     }
 
     /**
@@ -145,10 +153,12 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     private fun getMeOneOutfitPls(custom: String = "") {
+        val immutableEmail = getImmutableEmail()
+        Log.wtf("EMAIL:", "$immutableEmail $latitude $longitude")
         Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(MoshiConverterFactory.create())
-                .build().create(ClothingModel::class.java).getOutfit(email, latitude, longitude, custom)
+                .build().create(ClothingModel::class.java).getOutfit(immutableEmail, latitude, longitude, custom)
                 .enqueue(object : Callback<Outfit> {
                     override fun onFailure(call: Call<Outfit>?, t: Throwable?) {
                         Log.wtf("no", "we failed again")
@@ -156,31 +166,44 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
                     override fun onResponse(call: Call<Outfit>, response: Response<Outfit>) {
                         if (response.isSuccessful) {
-
+                            Log.wtf("gteclothes", "image: ${response.body()?.accessory?.image} - name: ${response.body()?.accessory?.name}")
                             accessory_text.text = response.body()?.accessory?.name
 
                             Picasso.with(applicationContext)
-                                    .load(response.body()?.accessory?.link)
-                                    .fit()
+                                    .load("$BASEURL/clothes_images/${response.body()?.accessory?.image}")
                                     .into(accessories_image)
 
-                            top_text.text = response.body()?.top?.name
+                            top_text.text = response.body()?.tops?.name
 
                             Picasso.with(applicationContext)
-                                    .load(response.body()?.top?.link)
-                                    .fit()
+                                    .load("$BASEURL/clothes_images/${response.body()?.tops?.image}")
                                     .into(top_image)
 
-                            bottom_text.text = response.body()?.bottom?.name
+                            bottom_text.text = response.body()?.bottoms?.name
 
                             Picasso.with(applicationContext)
-                                    .load(response.body()?.bottom?.link)
-                                    .fit()
+                                    .load("$BASEURL/clothes_images/${response.body()?.bottoms?.image}")
                                     .into(bottom_image)
+
+                            Toast.makeText(applicationContext, "SUCCESS", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(applicationContext, "FAILURE ${response.message()} code: ${response.code()}", Toast.LENGTH_LONG).show()
                         }
                         apiClient?.disconnect()
                     }
 
                 })
     }
+
+    private fun getImmutableEmail(): String {
+        return if (email != null) {
+            email as String
+        } else {
+            ""
+        }
+    }
+
 }
+
+
+

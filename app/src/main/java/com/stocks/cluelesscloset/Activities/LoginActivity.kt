@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.stocks.cluelesscloset.Endpoints.BASEURL
 import com.stocks.cluelesscloset.Endpoints.CLIENT_ID
-import com.stocks.cluelesscloset.Endpoints.DEVBASEURL
 import com.stocks.cluelesscloset.Endpoints.NAME
 import com.stocks.cluelesscloset.Endpoints.SECRET
 import com.stocks.cluelesscloset.Model.UserModel
@@ -31,7 +31,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         if (getSharedPreferences(getString(R.string.prefs), Context.MODE_PRIVATE).getString(getString(R.string.save_email), "") != "") {
-            loginSecure(email_input.text.toString())
+            startActivity(Intent(this, OutfitActivity::class.java))
+            finish()
         }
 
         auth_switch.setOnCheckedChangeListener { _, isChecked ->
@@ -66,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
      */
     private fun loginUser(username: String, password: String) {
         val retrofit = Retrofit.Builder()
-                .baseUrl(DEVBASEURL)
+                .baseUrl(BASEURL)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build()
 
@@ -96,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
      */
     private fun registerUser(username: String, password: String, firstName: String, lastName: String) {
         val retrofit = Retrofit.Builder()
-                .baseUrl(DEVBASEURL)
+                .baseUrl(BASEURL)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build()
 
@@ -122,11 +123,11 @@ class LoginActivity : AppCompatActivity() {
      * @param email User email.
      */
     private fun loginSecure(email: String) {
-        getSharedPreferences(
-                getString(R.string.prefs), Context.MODE_PRIVATE)
-                .edit().putString(getString(R.string.save_email), email)
-                .apply()
+        val preferences = getSharedPreferences(getString(R.string.prefs), Context.MODE_PRIVATE)
+        val editor = preferences.edit()
+        editor.putString(getString(R.string.save_email), email.toLowerCase()).apply()
 
         startActivity(Intent(this, OutfitActivity::class.java))
+        finish()
     }
 }
