@@ -1,6 +1,7 @@
 package com.stocks.cluelesscloset.Activities
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -12,9 +13,18 @@ import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
+import com.squareup.picasso.Picasso
+import com.stocks.cluelesscloset.Endpoints.BASEURL
 import com.stocks.cluelesscloset.Fragments.SearchFragment
+import com.stocks.cluelesscloset.Model.ClothingModel
+import com.stocks.cluelesscloset.POKO.Outfit
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_outfit.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * Activity the user reaches after they login/register.
@@ -44,6 +54,11 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
      */
     private val searchFragment: SearchFragment = SearchFragment()
 
+    private var email: String = ""
+
+    private var latitude = 0.0
+    private var longitude = 0.0
+
     override fun onConnected(p0: Bundle?) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
@@ -53,7 +68,10 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         currentLocation?.let {
             Toast.makeText(this, "Latitude: ${it.latitude}, Longitude: ${it.longitude}", Toast.LENGTH_LONG).show()
             Log.wtf(TAG, "Latitude: ${it.latitude}, Longitude: ${it.longitude}")
-            apiClient?.disconnect()
+            latitude = it.latitude
+            longitude = it.longitude
+
+            getMeOneOutfitPls()
         }
     }
 
@@ -67,19 +85,22 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_outfit)
         buildGoogleApiClient()
         apiClient?.connect()
+
         val permissionsArray = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
         ActivityCompat.requestPermissions(
                 this,
                 permissionsArray,
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
         )
+
+        email = getSharedPreferences(getString(R.string.prefs), Context.MODE_PRIVATE).getString(getString(R.string.save_email), "")
         setContentView(R.layout.activity_outfit)
         searchFragment.searchCompleteListener = object : SearchFragment.SearchCompleteListener {
             override fun searchCompleted(s: String) {
-                // send data to the CLOOOUD and ask for new outfit
-                Toast.makeText(applicationContext, s, Toast.LENGTH_LONG).show()
+                getMeOneOutfitPls(s)
             }
         }
 
@@ -88,7 +109,7 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         }
 
        gib_new_outfit_button.setOnClickListener {
-           TODO("IMPLEMENT THIS")
+           getMeOneOutfitPls()
        }
 
         add_clothes_button.setOnClickListener {
@@ -105,7 +126,6 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build()
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -124,4 +144,43 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    private fun getMeOneOutfitPls(custom: String = "") {
+        Retrofit.Builder()
+                .baseUrl(BASEURL)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .build().create(ClothingModel::class.java).getOutfit(email, latitude, longitude, custom)
+                .enqueue(object : Callback<Outfit> {
+                    override fun onFailure(call: Call<Outfit>?, t: Throwable?) {
+                        Log.wtf("no", "we failed again")
+                    }
+
+                    override fun onResponse(call: Call<Outfit>, response: Response<Outfit>) {
+                        if (response.isSuccessful) {
+
+                            accessory_text.text = response.body()?.accessory?.name
+
+                            Picasso.with(applicationContext)
+                                    .load(response.body()?.accessory?.link)
+                                    .fit()
+                                    .into(accessories_image)
+
+                            top_text.text = response.body()?.top?.name
+
+                            Picasso.with(applicationContext)
+                                    .load(response.body()?.top?.link)
+                                    .fit()
+                                    .into(top_image)
+
+                            bottom_text.text = response.body()?.bottom?.name
+
+                            Picasso.with(applicationContext)
+                                    .load(response.body()?.bottom?.link)
+                                    .fit()
+                                    .into(bottom_image)
+                        }
+                        apiClient?.disconnect()
+                    }
+
+                })
+    }
 }

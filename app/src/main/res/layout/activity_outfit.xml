@@ -15,6 +15,7 @@
                   android:orientation="vertical">
 
         <TextView style="@style/mini_text"
+                  android:id="@+id/accessory_text"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_horizontal"
@@ -27,6 +28,7 @@
                    tools:ignore="NestedWeights"/>
 
         <TextView style="@style/mini_text"
+                  android:id="@+id/top_text"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_horizontal"
@@ -38,6 +40,7 @@
                    android:layout_weight="1"/>
 
         <TextView style="@style/mini_text"
+                  android:id="@+id/bottom_text"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_horizontal"

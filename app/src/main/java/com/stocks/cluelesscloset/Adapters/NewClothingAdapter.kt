@@ -18,13 +18,13 @@ class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val co
 
     override fun onBindViewHolder(holder: NewClothingAdapter.ViewHolder?, position: Int) {
         Picasso.with(context)
-                .load(dataList[position].imgUri)
+                .load(dataList[position].link)
                 .placeholder(R.drawable.ic_clothes_dark)
                 .error(R.drawable.ic_err)
                 .fit()
                 .into(holder?.image_icon)
 
-        holder?.clothing_label?.text = dataList[position].clothingName
+        holder?.clothing_label?.text = dataList[position].name
         holder?.trash_row?.setOnClickListener {
             removeItem(position)
         }
@@ -40,6 +40,9 @@ class NewClothingAdapter(private val dataList: MutableList<ClothingData>, val co
                         .inflate(R.layout.new_clothing_row, parent, false))
     }
 
+    /**
+     * Fun custom ViewHolder
+     */
     class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
         /**
          * Icon of image.

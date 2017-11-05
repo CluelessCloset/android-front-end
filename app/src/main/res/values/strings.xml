@@ -39,4 +39,10 @@
 
     <string name="cancel_button_text">Cancel</string>
     <string name="save_button_text">Save</string>
+
+    <!-- pref strings -->
+    <string name="prefs">prefs</string>
+    <string name="save_email">save_email</string>
+    <string name="warmth_level">Warmth Level</string>
+    <string name="water_resistant">Water resistant?</string>
 </resources>

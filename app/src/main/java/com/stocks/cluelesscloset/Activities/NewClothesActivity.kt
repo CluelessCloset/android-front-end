@@ -1,5 +1,6 @@
 package com.stocks.cluelesscloset.Activities
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,23 +14,55 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.Toast
+import com.stocks.cluelesscloset.Endpoints.DEVBASEURL
+import com.stocks.cluelesscloset.Model.ClothingModel
 import com.stocks.cluelesscloset.R
 import kotlinx.android.synthetic.main.activity_new_clothes.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 
 /**
  * Activity designated for user when they want to add a new article of clothing.
  */
 class NewClothesActivity : AppCompatActivity() {
+    /**
+     * Request code for for image capture.
+     */
     private val CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034
+    /**
+     * Request code needed for permissions.
+     */
     private val CODE_ALL = 5
-
+    /**
+     * App tag for logging.
+     */
     private val APP_TAG = "New Clothes Activity"
-
+    /**
+     * File where future photo will be located.
+     */
     private var photoFile: File? = null
+    /**
+     * Photo file name.
+     */
     private var photoFileName: String = "photo_file.jpg"
+    /**
+     * Bitmap of image.
+     */
     private var bitmap: Bitmap? = null
+    /**
+     * Determine whether or not items can be saved yet.
+     */
+    private var go = false
+    /**
+     * Warmth level of clothes. This defaults to 1.
+     */
+    private var warmthLevel = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +70,19 @@ class NewClothesActivity : AppCompatActivity() {
         gibePermission()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        warmth_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                warmthLevel = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
 
         val directory = File(Environment.getExternalStorageDirectory().toString() + File.separator + "images")
         directory.mkdirs()
@@ -46,6 +92,35 @@ class NewClothesActivity : AppCompatActivity() {
                 arrayOf(getString(R.string.accessories),
                 getString(R.string.tops),
                 getString(R.string.bottom)))
+
+        cancel_button.setOnClickListener {
+            finish()
+        }
+
+        save_button.setOnClickListener {
+            if (go && photoFile != null) {
+
+                val clothingType = apparel_category_box.selectedItem.toString()
+                val articleName = new_apparel_box.text.toString()
+                val clothingModel = Retrofit.Builder()
+                        .baseUrl(DEVBASEURL)
+                        .addConverterFactory(MoshiConverterFactory.create())
+                        .build()
+                        .create(ClothingModel::class.java)
+
+                val email = getSharedPreferences(
+                        getString(R.string.prefs),
+                        Context.MODE_PRIVATE).getString(getString(R.string.save_email), "")
+
+                val reqFile = RequestBody.create(MediaType.parse("image/*"), photoFile)
+                val body = MultipartBody.Part.createFormData("image_url", photoFile?.name, reqFile)
+                val name = RequestBody.create(MediaType.parse("text/plain"), "image")
+                clothingModel.addArticle(body, name, articleName, email, water_resistant_box.isChecked, warmthLevel, clothingType)
+                finish()
+            } else  {
+                Toast.makeText(applicationContext, "Finish filling out things!", Toast.LENGTH_LONG).show()
+            }
+        }
 
         photo_button.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -65,16 +140,6 @@ class NewClothesActivity : AppCompatActivity() {
                 startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
             }
 
-            cancel_button.setOnClickListener {
-                finish()
-            }
-
-            save_button.setOnClickListener {
-                val spinnerChoice = apparel_category_box.selectedItem.toString()
-                val name = new_apparel_box.text.toString()
-                // AND BITMAP! FIRE THAT SHIT UP
-                finish()
-            }
 
         }
     }
@@ -89,6 +154,8 @@ class NewClothesActivity : AppCompatActivity() {
                     // Load the taken image into a preview
                     val ivPreview = photo as ImageView
                     ivPreview.setImageBitmap(bitmap)
+                    go = true
+
                 }
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
@@ -102,20 +169,13 @@ class NewClothesActivity : AppCompatActivity() {
      * @return File descriptor to URI.
      */
     fun getPhotoFileUri(fileName: String): File? {
-        // Only continue if the SD Card is mounted
         if (isExternalStorageAvailable()) {
-            // Get safe storage directory for photos
-            // Use `getExternalFilesDir` on Context to access package-specific directories.
-            // This way, we don't need to request external read/write runtime permissions.
             val mediaStorageDir = File(
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG)
 
-            // Create the storage directory if it does not exist
             if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
                 Log.d(APP_TAG, "failed to create directory")
             }
-
-            // Return the file target for the photo based on filename
 
             return File(mediaStorageDir.path + File.separator + fileName)
         }
