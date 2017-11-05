@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_new_clothes.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -113,33 +114,33 @@ class NewClothesActivity : AppCompatActivity() {
                         .build()
                         .create(ClothingModel::class.java)
 
-                val email = getSharedPreferences(
-                        getString(R.string.prefs),
-                        Context.MODE_PRIVATE).getString(getString(R.string.save_email), "")
+                val preferences = getSharedPreferences(getString(R.string.prefs), Context.MODE_PRIVATE)
+                val email = preferences.getString(getString(R.string.save_email), "")
+
+                Log.wtf("fake news", email)
 
                 val reqFile = RequestBody.create(MediaType.parse("image/*"), photoFile as File)
                 val body = MultipartBody.Part.createFormData(photoFileName, photoFile?.name, reqFile)
                 val name = RequestBody.create(MediaType.parse("text/plain"), "img_url")
+                val betterArticleName = RequestBody.create(MediaType.parse("text/plain"), articleName)
+                val betterType = RequestBody.create(MediaType.parse("text/plain"), clothingType)
+                val betterEmail = RequestBody.create(MediaType.parse("text/plain"), email)
                 clothingModel.addArticle(
                         body,
                         name,
-                        articleName,
-                        clothingType,
-                        email,
+                        betterArticleName,
+                        betterType,
+                        betterEmail,
                         water_resistant_box.isChecked,
                         warmthLevel)
 
-                        .enqueue(object : Callback<BaseResponse> {
-                            override fun onFailure(call: Call<BaseResponse>?, t: Throwable?) {
+                        .enqueue(object : Callback<ResponseBody> {
+                            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
                                 // pizza doge
                             }
 
-                            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                                if (response.isSuccessful) {
+                            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                                     finish()
-                                } else {
-                                    Toast.makeText(applicationContext, "DID NOT UPLOAD CORRECTLY ${response.message()} code ${response.code()}", Toast.LENGTH_LONG).show()
-                                }
                             }
 
                         })

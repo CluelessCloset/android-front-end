@@ -13,11 +13,11 @@ interface ClothingModel {
     @POST("/user/add_clothes")
     fun addArticle(@Part image: MultipartBody.Part,
                    @Part("name") fileName: RequestBody,
-                   @Part("name") article_name: String,
-                   @Part("clothing_type") articleType: String,
-                   @Part("owner_email") email: String,
+                   @Part("clothing_name") article_name: RequestBody,
+                   @Part("clothing_type") articleType: RequestBody,
+                   @Part("email") email: RequestBody,
                    @Part("water_resistant") waterResistant: Boolean,
-                   @Part("warmth_rating") warmthRating: Int): Call<BaseResponse>
+                   @Part("warmthInputSlider") warmthRating: Int): Call<BaseResponse>
 
     @GET("/getclothes")
     fun getOutfit(@Query("email") token: String,

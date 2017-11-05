@@ -33,9 +33,9 @@
     <string name="photo_snap">Snap a photo of your apparel!</string>
 
     <!-- Spinner items -->
-    <string name="accessories">Accessories</string>
-    <string name="tops">Tops</string>
-    <string name="bottoms">Bottoms</string>
+    <string name="accessories">Accessory</string>
+    <string name="tops">Top</string>
+    <string name="bottoms">Bottom</string>
 
     <string name="cancel_button_text">Cancel</string>
     <string name="save_button_text">Save</string>

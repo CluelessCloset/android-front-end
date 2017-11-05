@@ -27,6 +27,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+
 /**
  * Activity the user reaches after they login/register.
  * The user gets a suggested outfit based on what the a number of factors.
@@ -202,7 +203,6 @@ class OutfitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             ""
         }
     }
-
 }
 
 
