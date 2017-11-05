@@ -14,8 +14,6 @@ public interface UserModel {
                     @Field("secret") secret: String,
                     @Field("user_id") userId: String): Call<ClientResponse>
 
-    // username / password
-    // gives authorization code
     @GET("/oauth2/authorize")
     fun authorizeUser(@Query("email") email: String,
                       @Query("password") password: String): Call<TokenResponse>
