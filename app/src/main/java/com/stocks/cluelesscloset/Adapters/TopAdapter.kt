@@ -31,9 +31,7 @@ class TopAdapter(private val dataList: MutableList<Top>, val context: Context): 
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataList.size
-    }
+    override fun getItemCount(): Int = dataList.size
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         return ViewHolder(
